@@ -2,7 +2,7 @@
 {
     public class Post
     {
-        public Guid id { get; set; }
+        public Guid Id { get; set; }
         public string Title { get; set; }
         public string Details { get; set; }
         public int Like { get; set; }

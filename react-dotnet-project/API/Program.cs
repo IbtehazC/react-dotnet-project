@@ -1,3 +1,6 @@
+using Application.Core;
+using Application.Posts;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Persistance;
 
@@ -19,6 +22,8 @@ builder.Services.AddCors(opt =>
         policy.WithOrigins("http://localhost:3000");
     });
 });
+builder.Services.AddMediatR(typeof(List.Handler).Assembly);
+builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
