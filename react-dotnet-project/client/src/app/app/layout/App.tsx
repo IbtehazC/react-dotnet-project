@@ -1,18 +1,27 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { Post } from "../models/post";
 import Navbar from "./Navbar";
-import PostsDashboard from "../features/posts/dashboard/PostsDashboard";
+import PostsDashboard from "../../features/posts/dashboard/PostsDashboard";
 import { v4 as uuid } from "uuid";
+import agent from "../api/agent";
+import LoadingComponent from "./LoadingComponent";
 
 function App() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [selectedPost, setSelectedPost] = useState<Post | undefined>(undefined);
   const [editMode, setEditMode] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    axios.get<Post[]>("http://localhost:5000/api/posts").then((res) => {
-      setPosts(res.data);
+    agent.Posts.list().then((response) => {
+      let posts: Post[] = [];
+      response.forEach((post) => {
+        post.createdAt = post.createdAt.split("T")[0];
+        posts.push(post);
+      });
+      setPosts(posts);
+      setLoading(false);
     });
   }, []);
 
@@ -34,16 +43,34 @@ function App() {
   }
 
   function handleCreateOrEditPost(post: Post) {
-    post.id
-      ? setPosts([...posts.filter((p) => p.id !== post.id), post])
-      : setPosts([...posts, { ...post, id: uuid() }]);
-    setEditMode(false);
-    setSelectedPost(post);
+    setSubmitting(true);
+    if (post.id) {
+      agent.Posts.update(post).then(() => {
+        setPosts([...posts.filter((p) => p.id !== post.id), post]);
+        setSelectedPost(post);
+        setEditMode(false);
+        setSubmitting(false);
+      });
+    } else {
+      post.id = uuid();
+      agent.Posts.create(post).then(() => {
+        setPosts([...posts, post]);
+        setSelectedPost(post);
+        setEditMode(false);
+        setSubmitting(false);
+      });
+    }
   }
 
   function handleDeletePost(id: string) {
-    setPosts([...posts.filter((p) => p.id !== id)]);
+    setSubmitting(true);
+    agent.Posts.delete(id).then(() => {
+      setPosts([...posts.filter((p) => p.id !== id)]);
+      setSubmitting(false);
+    });
   }
+
+  if (loading) return <LoadingComponent content="Loading App..." />;
 
   return (
     <>
@@ -58,6 +85,7 @@ function App() {
         closeForm={handleFormClose}
         createOrEdit={handleCreateOrEditPost}
         deletePost={handleDeletePost}
+        submitting={submitting}
       />
     </>
   );

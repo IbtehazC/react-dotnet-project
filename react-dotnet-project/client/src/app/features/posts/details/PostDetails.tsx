@@ -1,11 +1,12 @@
 import React from "react";
-import { Post } from "../../../models/post";
+import { Post } from "../../../app/models/post";
 
 interface Props {
   post: Post;
   cancelSelectPost: () => void;
   openForm: (id: string) => void;
   deletePost: (id: string) => void;
+  submitting: boolean;
 }
 
 export default function PostDetails({

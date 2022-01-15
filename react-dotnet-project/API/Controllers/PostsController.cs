@@ -25,6 +25,7 @@ namespace API.Controllers
             return Ok(await Mediator.Send(new Create.Command { Post = post }));
         }
 
+        [Route("{id}")]
         [HttpPut]
         public async Task<ActionResult> EditPost(Guid id, Post post)
         {
@@ -32,6 +33,7 @@ namespace API.Controllers
             return Ok(await Mediator.Send(new Edit.Command { Post = post }));
         }
 
+        [Route("{id}")]
         [HttpDelete]
         public async Task<ActionResult> DeletePost(Guid id)
         {

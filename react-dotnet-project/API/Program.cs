@@ -19,7 +19,7 @@ builder.Services.AddCors(opt =>
 {
     opt.AddPolicy(name: AllowSpecificPolicy, policy =>
     {
-        policy.WithOrigins("http://localhost:3000");
+        policy.WithOrigins("http://localhost:3000").AllowAnyHeader().AllowAnyMethod();
     });
 });
 builder.Services.AddMediatR(typeof(List.Handler).Assembly);

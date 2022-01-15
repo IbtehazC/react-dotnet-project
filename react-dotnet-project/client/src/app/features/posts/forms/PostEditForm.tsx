@@ -1,24 +1,26 @@
 import { ChangeEvent, FormEvent, useState } from "react";
-import { Post } from "../../../models/post";
+import { Post } from "../../../app/models/post";
 
 interface Props {
   post: Post | undefined;
   closeForm: () => void;
   createOrEdit: (post: Post) => void;
+  submitting: boolean;
 }
 
 export default function PostEditForm({
   post: selectedPost,
   closeForm,
   createOrEdit,
+  submitting
 }: Props) {
   const initialState = selectedPost ?? {
     id: "",
     title: "",
     details: "",
     like: 0,
-    category: "",
-    createdAt: "",
+    category: "Games",
+    createdAt: "2021-12-03T12:48:00.6458234",
   };
 
   const [post, setPost] = useState(initialState);

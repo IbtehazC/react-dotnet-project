@@ -1,5 +1,5 @@
 import React from "react";
-import { Post } from "../../../models/post";
+import { Post } from "../../../app/models/post";
 import PostDetails from "../details/PostDetails";
 import PostEditForm from "../forms/PostEditForm";
 import PostList from "./PostList";
@@ -14,6 +14,7 @@ interface Props {
   closeForm: () => void;
   createOrEdit: (post: Post) => void;
   deletePost: (id: string) => void;
+  submitting: boolean
 }
 
 export default function PostsDashboard({
@@ -25,7 +26,8 @@ export default function PostsDashboard({
   openForm,
   closeForm,
   createOrEdit,
-  deletePost
+  deletePost,
+  submitting
 }: Props) {
   return (
     <div className="grid grid-cols-4 pt-12 bg-black">
@@ -39,6 +41,7 @@ export default function PostsDashboard({
             cancelSelectPost={cancelSelectPost}
             openForm={openForm}
             deletePost={deletePost}
+            submitting={submitting}
           />
         )}
         {editMode && (
@@ -46,6 +49,7 @@ export default function PostsDashboard({
             closeForm={closeForm}
             post={selectedPost}
             createOrEdit={createOrEdit}
+            submitting={submitting}
           />
         )}
       </div>
