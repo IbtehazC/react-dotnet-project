@@ -1,3 +1,4 @@
+import React from "react";
 import { useEffect, useState } from "react";
 import { Post } from "../models/post";
 import Navbar from "./Navbar";
@@ -5,6 +6,9 @@ import PostsDashboard from "../../features/posts/dashboard/PostsDashboard";
 import { v4 as uuid } from "uuid";
 import agent from "../api/agent";
 import LoadingComponent from "./LoadingComponent";
+import { useDispatch, useSelector } from "react-redux";
+import { State } from "../state/reducers";
+import { listPost } from "../state/actions";
 
 function App() {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -13,7 +17,11 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 
+  const dispatch = useDispatch();
+  const state = useSelector((state: State) => state.post);
+
   useEffect(() => {
+    dispatch(listPost());
     agent.Posts.list().then((response) => {
       let posts: Post[] = [];
       response.forEach((post) => {
@@ -23,7 +31,7 @@ function App() {
       setPosts(posts);
       setLoading(false);
     });
-  }, []);
+  }, [dispatch]);
 
   function handleSelectPost(id: string) {
     setSelectedPost(posts.find((x) => x.id === id));
@@ -75,6 +83,7 @@ function App() {
   return (
     <>
       <Navbar openForm={handleFormOpen} />
+      <h1 className="pt-12 text-white">{state.length}</h1>
       <PostsDashboard
         posts={posts}
         selectedPost={selectedPost}

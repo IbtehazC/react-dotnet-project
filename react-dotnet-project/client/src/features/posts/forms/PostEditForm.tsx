@@ -1,3 +1,4 @@
+import React from "react";
 import { ChangeEvent, FormEvent, useState } from "react";
 import { Post } from "../../../app/models/post";
 
@@ -12,7 +13,7 @@ export default function PostEditForm({
   post: selectedPost,
   closeForm,
   createOrEdit,
-  submitting
+  submitting,
 }: Props) {
   const initialState = selectedPost ?? {
     id: "",

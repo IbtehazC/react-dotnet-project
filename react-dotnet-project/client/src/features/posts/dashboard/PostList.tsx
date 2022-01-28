@@ -1,3 +1,4 @@
+import React from "react";
 import { Post } from "../../../app/models/post";
 
 interface Props {
