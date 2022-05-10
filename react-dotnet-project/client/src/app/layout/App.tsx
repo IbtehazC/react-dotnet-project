@@ -8,37 +8,36 @@ import agent from "../api/agent";
 import LoadingComponent from "./LoadingComponent";
 import { useDispatch, useSelector } from "react-redux";
 import { State } from "../state/reducers";
-import { listPost } from "../state/actions";
+import { listPost, setSelectedPost, cancelSelectedPost } from "../state/actions";
 
 function App() {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [selectedPost, setSelectedPost] = useState<Post | undefined>(undefined);
   const [editMode, setEditMode] = useState(false);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 
   const dispatch = useDispatch();
-  const state = useSelector((state: State) => state.post);
+  const posts = useSelector((state: State) => state.post);
+  const selectedPost = useSelector((state: State) => state.selectedPost);
 
   useEffect(() => {
-    dispatch(listPost());
-    agent.Posts.list().then((response) => {
-      let posts: Post[] = [];
-      response.forEach((post) => {
-        post.createdAt = post.createdAt.split("T")[0];
-        posts.push(post);
-      });
-      setPosts(posts);
-      setLoading(false);
-    });
+    if (posts.length === 0) dispatch(listPost());
+    // let posts: Post[] = [];
+    // posts.forEach((post) => {
+    //   post.createdAt = post.createdAt.split("T")[0];
+    //   posts.push(post);
+    // });
+    setLoading(false);
   }, [dispatch]);
 
   function handleSelectPost(id: string) {
-    setSelectedPost(posts.find((x) => x.id === id));
+    const post = posts.find((x) => x.id === id)
+    if (post === undefined) return 
+    dispatch(setSelectedPost(post))
   }
 
   function handleCancelSelectPost() {
-    setSelectedPost(undefined);
+    dispatch(cancelSelectedPost())
+    console.log(selectedPost);
   }
 
   function handleFormOpen(id?: string) {
@@ -54,7 +53,7 @@ function App() {
     setSubmitting(true);
     if (post.id) {
       agent.Posts.update(post).then(() => {
-        setPosts([...posts.filter((p) => p.id !== post.id), post]);
+        // setPosts([...posts.filter((p) => p.id !== post.id), post]);
         setSelectedPost(post);
         setEditMode(false);
         setSubmitting(false);
@@ -62,7 +61,7 @@ function App() {
     } else {
       post.id = uuid();
       agent.Posts.create(post).then(() => {
-        setPosts([...posts, post]);
+        // setPosts([...posts, post]);
         setSelectedPost(post);
         setEditMode(false);
         setSubmitting(false);
@@ -73,7 +72,7 @@ function App() {
   function handleDeletePost(id: string) {
     setSubmitting(true);
     agent.Posts.delete(id).then(() => {
-      setPosts([...posts.filter((p) => p.id !== id)]);
+      // setPosts([...posts.filter((p) => p.id !== id)]);
       setSubmitting(false);
     });
   }
@@ -83,7 +82,6 @@ function App() {
   return (
     <>
       <Navbar openForm={handleFormOpen} />
-      <h1 className="pt-12 text-white">{state.length}</h1>
       <PostsDashboard
         posts={posts}
         selectedPost={selectedPost}

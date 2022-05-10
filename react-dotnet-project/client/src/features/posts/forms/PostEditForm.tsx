@@ -3,7 +3,7 @@ import { ChangeEvent, FormEvent, useState } from "react";
 import { Post } from "../../../app/models/post";
 
 interface Props {
-  post: Post | undefined;
+  post: Post | null;
   closeForm: () => void;
   createOrEdit: (post: Post) => void;
   submitting: boolean;

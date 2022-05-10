@@ -6,7 +6,7 @@ import PostList from "./PostList";
 
 interface Props {
   posts: Post[];
-  selectedPost: Post | undefined;
+  selectedPost: Post | null;
   selectPost: (id: string) => void;
   cancelSelectPost: () => void;
   editMode: boolean;
@@ -14,7 +14,7 @@ interface Props {
   closeForm: () => void;
   createOrEdit: (post: Post) => void;
   deletePost: (id: string) => void;
-  submitting: boolean
+  submitting: boolean;
 }
 
 export default function PostsDashboard({
@@ -27,7 +27,7 @@ export default function PostsDashboard({
   closeForm,
   createOrEdit,
   deletePost,
-  submitting
+  submitting,
 }: Props) {
   return (
     <div className="grid grid-cols-4 pt-12 bg-black">
@@ -35,6 +35,7 @@ export default function PostsDashboard({
         <PostList posts={posts} selectPost={selectPost} />
       </ul>
       <div className="col-start-3 col-span-2">
+        {console.log(selectedPost)}
         {selectedPost && !editMode && (
           <PostDetails
             post={selectedPost}
